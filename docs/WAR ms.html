@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIAP WAR</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Menyembunyikan scrollbar */
+        }
+        body {
+            font-family: 'Press Start 2P', cursive; /* Menggunakan font yang ada */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url('background1.jpg') no-repeat center center fixed; /* Ganti dengan nama file gambar default Anda */
+            background-size: cover; /* Menyesuaikan ukuran gambar */
+            color: rgb(255, 255, 255); /* Putih untuk teks default */
+        }
+        #fade-text {
+            position: absolute;
+            top: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            opacity: 0;
+            animation: fadeInOut 1s infinite; /* Animasi kedip lebih cepat */
+            color: #00f; /* Biru terang untuk teks ini */
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff; /* Garis pinggir putih */
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        #message {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00f; /* Biru terang untuk teks ini */
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff; /* Garis pinggir putih */
+        }
+        #form-container {
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.5); /* Background semi-transparan */
+            padding: 10px;
+            border-radius: 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1rem;
+            border: 2px solid transparent; /* Border transparan untuk menghilangkan garis tepi warna merah */
+            border-radius: 5px;
+            background-color: #000; /* Hitam untuk input dan button */
+            color: rgb(255, 255, 255); /* Putih untuk teks input dan button */
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0); /* Efek bayangan RGB */
+            animation: rgb-border-color-change 5s linear infinite; /* Animasi perubahan warna border RGB */
+        }
+        button {
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #333; /* Warna hover lebih gelap */
+        }
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #222; /* Warna latar belakang footer gelap */
+            color: rgb(255, 255, 255); /* Putih untuk teks footer */
+            text-align: center;
+            padding: 10px;
+            font-size: 0.875rem;
+            /* Tidak ada text-shadow pada footer */
+        }
+        #file-input {
+            display: none; /* Sembunyikan input file */
+        }
+        #background-btn {
+            position: fixed;
+            bottom: 80px; /* Menempatkan tombol di atas footer */
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: url('pencil-icon.png') no-repeat center center; /* Ganti dengan nama file gambar ikon pensil Anda */
+            background-size: cover; /* Menyesuaikan ukuran gambar ikon */
+            border: none;
+            cursor: pointer;
+            z-index: 10; /* Pastikan tombol berada di atas footer */
+        }
+        #running-text {
+            position: absolute;
+            bottom: 40px; /* Mendekatkan running text ke footer */
+            white-space: nowrap; /* Mencegah teks membungkus */
+            overflow: hidden;
+            width: 100%;
+            font-size: 1.5rem;
+            animation: scroll-text 10s linear infinite, rgb-color-change 5s linear infinite; /* Kecepatan scrolling dan perubahan warna RGB */
+            color: rgb(255, 0, 0); /* Warna awal untuk teks ini */
+        }
+        @keyframes scroll-text {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        @keyframes rgb-color-change {
+            0% { color: rgb(255, 0, 0); } /* Merah */
+            25% { color: rgb(0, 255, 0); } /* Hijau */
+            50% { color: rgb(0, 0, 255); } /* Biru */
+            75% { color: rgb(255, 255, 0); } /* Kuning */
+            100% { color: rgb(255, 0, 0); } /* Merah */
+        }
+        @keyframes rgb-border-color-change {
+            0% { border-color: rgb(255, 0, 0); } /* Merah */
+            25% { border-color: rgb(0, 255, 0); } /* Hijau */
+            50% { border-color: rgb(0, 0, 255); } /* Biru */
+            75% { border-color: rgb(255, 255, 0); } /* Kuning */
+            100% { border-color: rgb(255, 0, 0); } /* Merah */
+        }
+        #current-time {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: rgb(255, 255, 255); /* Putih untuk teks ini */
+            background: rgba(0, 0, 0, 0.5); /* Background hitam transparan */
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="fade-text">AYO KITA WAR!!</div>
+    <div id="current-time">--:--:--</div> <!-- Waktu saat ini tanpa label -->
+    <div id="form-container">
+        <label for="redirect-hour">Jam (24h):</label>
+        <input type="number" id="redirect-hour" min="0" max="23" placeholder="15">
+        <label for="redirect-minute">Menit:</label>
+        <input type="number" id="redirect-minute" min="0" max="59" placeholder="30">
+        <label for="redirect-second">Detik:</label>
+        <input type="number" id="redirect-second" min="0" max="59" placeholder="0">
+        <label for="redirect-link">Link Tujuan:</label>
+        <input type="text" id="redirect-link" placeholder="https://www.example.com">
+        <button onclick="updateRedirect()">Alihkan</button>
+    </div>
+    <div id="message">Akan dialihkan sesuai waktu.</div>
+    <div id="running-text">Masih jaman war manual? otomatis lahh... mana main :D #BERCYANDAA</div>
+    <button id="background-btn" onclick="document.getElementById('file-input').click()"></button> <!-- Tombol ikon pensil untuk membuka dialog pemilihan file -->
+    <input type="file" id="file-input" accept="image/*" onchange="changeBackground(event)"> <!-- Input file untuk memilih gambar -->
+    <footer>
+        &copy; 2024 Ibro. All rights reserved.
+    </footer>
+    <script>
+        let targetHour = null;
+        let targetMinute = null;
+        let targetSecond = null;
+        let targetUrl = '';
+
+        function updateRedirect() {
+            targetHour = parseInt(document.getElementById('redirect-hour').value);
+            targetMinute = parseInt(document.getElementById('redirect-minute').value);
+            targetSecond = parseInt(document.getElementById('redirect-second').value);
+            targetUrl = document.getElementById('redirect-link').value;
+            
+            if (isNaN(targetHour) || targetHour < 0 || targetHour > 23 ||
+                isNaN(targetMinute) || targetMinute < 0 || targetMinute > 59 ||
+                isNaN(targetSecond) || targetSecond < 0 || targetSecond > 59 ||
+                !targetUrl) {
+                alert('Silakan masukkan waktu dan URL yang valid.');
+                return;
+            }
+            document.getElementById('message').textContent = `Akan dialihkan ke ${targetUrl} pada jam ${targetHour}:${targetMinute}:${targetSecond}.`;
+        }
+
+        function updateCurrentTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        function redirectBasedOnTime() {
+            if (targetHour === null || targetMinute === null || targetSecond === null || !targetUrl) return;
+            
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentSecond = now.getSeconds();
+
+            if (currentHour === targetHour && currentMinute === targetMinute && currentSecond === targetSecond) {
+                window.open(targetUrl, '_blank'); // Buka URL di tab baru
+            }
+        }
+
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = `url('${e.target.result}')`;
+                    document.body.style.backgroundColor = ''; // Reset background color
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        setInterval(() => {
+            updateCurrentTime();
+            redirectBasedOnTime();
+        }, 1000); // Periksa setiap detik
+    </script>
+</body>
+</html>
